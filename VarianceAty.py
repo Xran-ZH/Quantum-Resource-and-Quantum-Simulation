@@ -98,7 +98,7 @@ p3=partEntropy(states,3)
 p4=partEntropy(states,4)
 np.save("./vardata/part2atypical",arr=p2)
 np.save("./vardata/part3atypical",arr=p3)
-np.save("./vardata/part4aypical",arr=p4)
+np.save("./vardata/part4atypical",arr=p4)
 
 #trotter error of the evoluted state
 count = 2000

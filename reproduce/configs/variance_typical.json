@@ -1,0 +1,15 @@
+{
+  "case": "typical",
+  "n": 10,
+  "depth": 40,
+  "samples": 2000,
+  "delta_t": 0.01,
+  "Jx": 1.0,
+  "hx": 0.8090,
+  "hy": 0.9045,
+  "pbc": true,
+  "trotter_order": 1,
+  "trotter_steps": 1,
+  "seed": 1234,
+  "start_index": 0
+}

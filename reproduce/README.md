@@ -37,5 +37,6 @@ workflow:
 3. compute bootstrap confidence intervals using `src/bootstrap.py`;
 4. plot entanglement entropy together with the variance of the rescaled error.
 
-The notebook writes outputs to `reproduce/outputs/run_variance_then_plot/`,
-which is ignored by Git.
+The notebook output in `reproduce/outputs/run_variance_then_plot/` is included
+as a small example data set. Other generated output directories remain ignored
+by Git.

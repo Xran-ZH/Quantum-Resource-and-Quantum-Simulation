@@ -4,20 +4,23 @@ This file records how the existing data files in the public repository relate
 to the original exploratory scripts and notebooks. The original files are kept
 for provenance in `legacy/`.
 
-## Existing Data Directories
+## Archived Original Data Directories
 
-- `vardata/`: variance and entanglement data used by the variance figures.
-  The original typical workflow is preserved in `legacy/scripts/VarianceTy.py`;
-  the original atypical workflow is preserved in `legacy/scripts/VarianceAty.py`.
-- `data/`: magic-dependent states and error distributions used for the
-  distribution and kurtosis figures.
-- `newdata/`: three error distributions for low-magic/low-entanglement,
-  high-magic/low-entanglement, and high-magic/high-entanglement states.
-- `mag_time_data/`: magic and entanglement growth data. The historical magic
-  recomputation script is preserved as `legacy/scripts/mag_time_tystate.py`.
-- `LongtimeSim/`: long-time simulation data used by
+- `legacy/data_original/vardata/`: variance and entanglement data used by the
+  variance figures. The original typical workflow is preserved in
+  `legacy/scripts/VarianceTy.py`; the original atypical workflow is preserved in
+  `legacy/scripts/VarianceAty.py`.
+- `legacy/data_original/data/`: magic-dependent states and error distributions
+  used for the distribution and kurtosis figures.
+- `legacy/data_original/newdata/`: three error distributions for
+  low-magic/low-entanglement, high-magic/low-entanglement, and
+  high-magic/high-entanglement states.
+- `legacy/data_original/mag_time_data/`: magic and entanglement growth data.
+  The historical magic recomputation script is preserved as
+  `legacy/scripts/mag_time_tystate.py`.
+- `legacy/data_original/LongtimeSim/`: long-time simulation data used by
   `legacy/notebooks/LongTimeSimulation.ipynb`.
-- `OtherHamiltonians/`: data used by
+- `legacy/data_original/OtherHamiltonians/`: data used by
   `legacy/notebooks/OtherHamiltonians.ipynb`.
 
 ## Cleaned Reproduction Outputs

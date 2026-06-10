@@ -9,18 +9,16 @@ preserved in `legacy/` for provenance. The cleaned reproduction workflow is in
 
 ## Repository Layout
 
-- `legacy/`: original scripts, notebooks, and figures used during the project.
+- `legacy/`: original scripts, notebooks, figures, and data used during the
+  project.
+- `legacy/data_original/`: archived original data directories from the
+  exploratory workflow.
 - `reproduce/`: cleaned scripts and reusable helpers for new runs.
 - `DATA_PROVENANCE.md`: mapping from existing data directories to the original
   generation workflows.
 - `requirements.txt`: minimal Python environment for the cleaned scripts.
-- `vardata/`: existing variance and entanglement data.
-- `data/`: existing magic and kurtosis data.
-- `newdata/`: existing three-distribution data for the joint effect of magic
-  and entanglement.
-- `mag_time_data/`: existing resource-growth data.
-- `LongtimeSim/`: existing long-time simulation data.
-- `OtherHamiltonians/`: existing data for Hamiltonians beyond the main text.
+- `reproduce/outputs/`: cleaned workflow outputs, including the committed
+  notebook example data set.
 
 ## Quick Start
 

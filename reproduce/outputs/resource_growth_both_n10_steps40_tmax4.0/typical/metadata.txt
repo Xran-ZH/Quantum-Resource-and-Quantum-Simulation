@@ -1,0 +1,11 @@
+case: typical
+n: 10
+time_max: 4.0
+steps: 40
+subsystem_size: 4
+Jx: 1.0
+hx: 0.809
+hy: 0.9045
+pbc: True
+magic_batch_size: 4096
+state_generation: Statevector.from_int(0, 2**n) evolved by exp(-i H t)

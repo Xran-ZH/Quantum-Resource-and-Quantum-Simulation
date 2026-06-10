@@ -1,0 +1,19 @@
+n: 6
+state_seed: 4321
+delta_t: 0.1
+Jx: 1.0
+hx: 0.809
+hy: 0.9045
+pbc: False
+trotter_order: 1
+trotter_steps: 1
+magic_batch_size: 4096
+state_family: random global Clifford, i T gates for i=0..n, random global Clifford
+samples: 100000
+seed: 100000
+bootstrap_samples: 10000
+bootstrap_seed: 2468
+append: True
+samples_added_per_state_this_run: 100000
+total_samples_per_state: 200000
+error_rescaling: error**2 * delta_t^(-4)

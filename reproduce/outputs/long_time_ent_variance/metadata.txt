@@ -1,0 +1,11 @@
+n: 10
+state_depth: 40
+subsystem_size: 4
+samples: 2000
+delta_t: 0.1
+steps: 100
+total_time: 10.0
+trotter_order: 2
+typical_seed: 1234
+atypical_seed: 5678
+error_rescaling: errors**2 * delta_t^(-6)

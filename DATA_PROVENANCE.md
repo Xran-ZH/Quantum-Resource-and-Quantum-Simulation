@@ -11,7 +11,9 @@ for provenance in `legacy/`.
   `legacy/scripts/VarianceTy.py`; the original atypical workflow is preserved in
   `legacy/scripts/VarianceAty.py`.
 - `legacy/data_original/data/`: magic-dependent states and error distributions
-  used for the distribution and kurtosis figures.
+  used for the distribution and kurtosis figures. The archived repository
+  contains these selected states and error distributions, but not the complete
+  original state-selection script.
 - `legacy/data_original/newdata/`: three error distributions for
   low-magic/low-entanglement, high-magic/low-entanglement, and
   high-magic/high-entanglement states.
@@ -30,6 +32,15 @@ Newly generated results from the cleaned scripts are written to
 
 The cleaned variance script `reproduce/scripts/run_variance.py` fixes random
 seeds for random Clifford sampling and generates `ent_0.npy`, `ent_1.npy`,
-`antient_0.npy`, and `antient_1.npy` by default. The legacy scripts generated
-the indexed error samples only for `j > 1`; use `--start-index 2` to reproduce
-that historical indexing convention.
+`antient_0.npy`, and `antient_1.npy` by default. In the legacy scripts, the
+indexed error-sample loop starts from `j > 1` because the `j=0` and `j=1` files
+had already been generated during earlier test runs, and the production loop
+was then continued from `j=2`. The resulting archived data are complete; the
+loop bound in the legacy cleanup version is a provenance/cleanup artifact rather
+than a separate data-generation protocol.
+
+The cleaned magic/kurtosis script `reproduce/scripts/run_magic_kurtosis.py`
+uses an explicit seeded state family: a random global Clifford, followed by
+`i` T gates for `i=0,...,n`, followed by another random global Clifford. This
+provides a reproducible state-generation protocol for the magic/kurtosis
+analysis.

@@ -44,5 +44,14 @@ python reproduce/scripts/run_variance.py --case typical --seed 1234
 python reproduce/scripts/run_variance.py --case atypical --seed 5678
 ```
 
+Or open the notebook example:
+
+```text
+reproduce/notebooks/run_variance_then_plot.ipynb
+```
+
+The notebook calls `run_variance.py`, loads the generated data, computes
+bootstrap confidence intervals, and plots the entanglement/variance figure.
+
 The cleaned scripts do not overwrite the existing data files. See
 `reproduce/README.md` for details.

@@ -26,3 +26,16 @@ For historical compatibility with the legacy scripts, use `--start-index 2`.
 Random Clifford sampling is seeded through the `--seed` argument. Re-running
 with the same software environment and seed should reproduce the same sampled
 Clifford sequence.
+
+## Notebook Example
+
+The notebook `notebooks/run_variance_then_plot.ipynb` demonstrates the complete
+workflow:
+
+1. call `scripts/run_variance.py` for typical and atypical data;
+2. load the generated `.npy` files;
+3. compute bootstrap confidence intervals using `src/bootstrap.py`;
+4. plot entanglement entropy together with the variance of the rescaled error.
+
+The notebook writes outputs to `reproduce/outputs/run_variance_then_plot/`,
+which is ignored by Git.

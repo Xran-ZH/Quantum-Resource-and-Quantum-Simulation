@@ -9,12 +9,12 @@ trotter_order: 1
 steps: 100
 magic_batch_size: 4096
 state_family: random global Clifford, i T gates for i=0..n, random global Clifford
-samples: 100000
-seed: 1234
+samples: 1000000
+seed: 101234
 bootstrap_samples: 10000
 bootstrap_seed: 2468
-append: False
-samples_added_per_state_this_run: 100000
-total_samples_per_state: 100000
+append: True
+samples_added_per_state_this_run: 1000000
+total_samples_per_state: 1100000
 total_time: 10.0
 error_rescaling: error**2 * delta_t^(-4)

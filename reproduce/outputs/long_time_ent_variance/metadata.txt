@@ -8,4 +8,5 @@ total_time: 10.0
 trotter_order: 2
 typical_seed: 1234
 atypical_seed: 5678
-error_rescaling: errors**2 * delta_t^(-6)
+error_rescaling: none
+variance_definition: np.var(raw accumulated-time error samples)

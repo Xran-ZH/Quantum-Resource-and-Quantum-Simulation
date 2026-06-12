@@ -28,7 +28,8 @@ for provenance in `legacy/`.
 ## Cleaned Reproduction Outputs
 
 Newly generated results from the cleaned scripts are written to
-`reproduce/outputs/` by default and do not overwrite the existing data files.
+`reproduce/outputs/` by default. Generated output directories are ignored by
+Git unless explicitly added.
 
 The cleaned variance script `reproduce/scripts/run_variance.py` fixes random
 seeds for random Clifford sampling and generates `ent_0.npy`, `ent_1.npy`,
@@ -43,4 +44,6 @@ The cleaned magic/kurtosis script `reproduce/scripts/run_magic_kurtosis.py`
 uses an explicit seeded state family: a random global Clifford, followed by
 `i` T gates for `i=0,...,n`, followed by another random global Clifford. This
 provides a reproducible state-generation protocol for the magic/kurtosis
-analysis.
+analysis. Global Clifford samples are generated with Qiskit's compiled
+Bravyi-Maslov tableau backend using 64-bit seeds drawn from the explicit
+command-line random seed.

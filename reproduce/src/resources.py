@@ -4,7 +4,15 @@ from functools import lru_cache
 from itertools import product
 
 import numpy as np
-from qiskit.quantum_info import Operator, Pauli, Statevector, entropy, partial_trace, random_clifford
+from qiskit.quantum_info import (
+    Clifford,
+    Operator,
+    Pauli,
+    Statevector,
+    entropy,
+    partial_trace,
+    random_clifford as _qiskit_random_clifford,
+)
 
 try:
     import jax
@@ -21,11 +29,144 @@ def child_seed(rng: np.random.Generator) -> int:
     return int(rng.integers(0, 2**32 - 1, dtype=np.uint32))
 
 
+_QISKIT_RANDOM_CLIFFORD_TABLEAU = _qiskit_random_clifford.__globals__.get("random_clifford_tableau")
+GLOBAL_CLIFFORD_SAMPLER = (
+    "bravyi_maslov_qiskit_tableau_u64_seed"
+    if _QISKIT_RANDOM_CLIFFORD_TABLEAU is not None
+    else "bravyi_maslov_numpy_rng"
+)
+
+
+def _gf2_matmul(left: np.ndarray, right: np.ndarray) -> np.ndarray:
+    return ((left.astype(np.uint8) @ right.astype(np.uint8)) & 1).astype(bool)
+
+
+def _gf2_inverse(matrix: np.ndarray) -> np.ndarray:
+    matrix = np.asarray(matrix, dtype=bool)
+    n = matrix.shape[0]
+    if matrix.shape != (n, n):
+        raise ValueError("matrix must be square")
+
+    left = matrix.copy()
+    inverse = np.eye(n, dtype=bool)
+    for column in range(n):
+        pivot_candidates = np.flatnonzero(left[column:, column])
+        if len(pivot_candidates) == 0:
+            raise ValueError("matrix is singular over GF(2)")
+        pivot = column + int(pivot_candidates[0])
+        if pivot != column:
+            left[[column, pivot]] = left[[pivot, column]]
+            inverse[[column, pivot]] = inverse[[pivot, column]]
+
+        for row in range(n):
+            if row != column and left[row, column]:
+                left[row] ^= left[column]
+                inverse[row] ^= inverse[column]
+    return inverse
+
+
+def _sample_qmallows(n: int, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+    hadamards = np.zeros(n, dtype=bool)
+    permutation = np.zeros(n, dtype=int)
+    remaining = list(range(n))
+
+    for index in range(n):
+        m = n - index
+        epsilon = 4.0 ** (-m)
+        random_value = float(rng.random())
+        q_index = int(-np.ceil(np.log2(random_value + (1.0 - random_value) * epsilon)))
+        q_index = min(q_index, 2 * m - 1)
+        hadamards[index] = q_index < m
+        perm_index = q_index if q_index < m else 2 * m - q_index - 1
+        permutation[index] = remaining.pop(perm_index)
+
+    return hadamards, permutation
+
+
+def _fill_tril(matrix: np.ndarray, rng: np.random.Generator, symmetric: bool) -> None:
+    n = matrix.shape[0]
+    for row in range(n):
+        for column in range(row):
+            value = bool(rng.integers(0, 2))
+            matrix[row, column] = value
+            if symmetric:
+                matrix[column, row] = value
+
+
+def random_clifford_tableau(n: int, rng: np.random.Generator) -> np.ndarray:
+    """Sample an n-qubit Clifford tableau using the Bravyi-Maslov construction.
+
+    This mirrors Qiskit's accelerated sampler, but the random bits are drawn
+    directly from the caller-provided ``np.random.Generator`` instead of first
+    compressing the sample into a small integer seed.
+    """
+    if n < 1:
+        raise ValueError("n must be positive")
+
+    hadamards, permutation = _sample_qmallows(n, rng)
+    gamma1 = np.zeros((n, n), dtype=bool)
+    gamma2 = np.zeros((n, n), dtype=bool)
+    np.fill_diagonal(gamma1, rng.integers(0, 2, size=n).astype(bool))
+    np.fill_diagonal(gamma2, rng.integers(0, 2, size=n).astype(bool))
+    _fill_tril(gamma1, rng, symmetric=True)
+    _fill_tril(gamma2, rng, symmetric=True)
+
+    delta1 = np.eye(n, dtype=bool)
+    delta2 = np.eye(n, dtype=bool)
+    _fill_tril(delta1, rng, symmetric=False)
+    _fill_tril(delta2, rng, symmetric=False)
+
+    zero = np.zeros((n, n), dtype=bool)
+    prod1 = _gf2_matmul(gamma1, delta1)
+    prod2 = _gf2_matmul(gamma2, delta2)
+    inv1 = _gf2_inverse(delta1).T
+    inv2 = _gf2_inverse(delta2).T
+
+    table1 = np.concatenate(
+        [
+            np.concatenate([delta1, zero], axis=1),
+            np.concatenate([prod1, inv1], axis=1),
+        ],
+        axis=0,
+    )
+    table2 = np.concatenate(
+        [
+            np.concatenate([delta2, zero], axis=1),
+            np.concatenate([prod2, inv2], axis=1),
+        ],
+        axis=0,
+    )
+
+    table = np.zeros((2 * n, 2 * n), dtype=bool)
+    for index in range(n):
+        table[index] = table2[permutation[index]]
+        table[index + n] = table2[permutation[index] + n]
+
+    for index, has_hadamard in enumerate(hadamards):
+        if has_hadamard:
+            table[[index, index + n]] = table[[index + n, index]]
+
+    symplectic = _gf2_matmul(table1, table)
+    phases = rng.integers(0, 2, size=(2 * n, 1)).astype(bool)
+    return np.concatenate([symplectic, phases], axis=1)
+
+
+def _uint64_seed(rng: np.random.Generator) -> int:
+    return int(rng.integers(0, np.iinfo(np.uint64).max, dtype=np.uint64))
+
+
+def global_random_clifford(n: int, rng: np.random.Generator) -> Clifford:
+    if _QISKIT_RANDOM_CLIFFORD_TABLEAU is not None:
+        tableau = _QISKIT_RANDOM_CLIFFORD_TABLEAU(n, seed=_uint64_seed(rng))
+        return Clifford(tableau, validate=False)
+    return Clifford(random_clifford_tableau(n, rng), validate=False)
+
+
 def local_random_clifford(n: int, rng: np.random.Generator):
     """Tensor product of independently seeded one-qubit random Cliffords."""
-    clifford = random_clifford(1, seed=child_seed(rng))
+    clifford = global_random_clifford(1, rng)
     for _ in range(1, n):
-        clifford = clifford.expand(random_clifford(1, seed=child_seed(rng)))
+        clifford = clifford.expand(global_random_clifford(1, rng))
     return clifford
 
 
@@ -50,10 +191,10 @@ def generate_t_magic_state_family(n: int, seed: int = 1234) -> list[Statevector]
     states = []
     for t_count in range(n + 1):
         state = Statevector.from_int(0, 2**n)
-        state = state.evolve(random_clifford(n, seed=child_seed(rng)))
+        state = state.evolve(global_random_clifford(n, rng).to_circuit())
         for qubit in range(t_count):
             state = state.evolve(T_GATE, [qubit])
-        state = state.evolve(random_clifford(n, seed=child_seed(rng)))
+        state = state.evolve(global_random_clifford(n, rng).to_circuit())
         states.append(state)
     return states
 

@@ -23,9 +23,10 @@ python reproduce/scripts/run_variance.py --case atypical --seed 5678
 The cleaned script generates all indices from `0` through `depth` by default.
 For historical compatibility with the legacy scripts, use `--start-index 2`.
 
-Random Clifford sampling is seeded through the `--seed` argument. Re-running
-with the same software environment and seed should reproduce the same sampled
-Clifford sequence.
+Random Clifford sampling is seeded through the `--seed` argument. The global
+Clifford samples in the magic/kurtosis workflow use the Bravyi-Maslov tableau
+sampler through Qiskit's compiled tableau backend, with 64-bit seeds drawn from
+a NumPy random generator so the sampled sequence is reproducible from the seed.
 
 The helper `src/variance_experiment.py::sample_trotter_errors` can also be
 reused for the three-distribution analysis from the original workflow. Given
@@ -85,7 +86,7 @@ When `--append` is set, existing states and magic values are reused, new errors
 are concatenated to the existing error files, and the kurtosis/statistics/plots
 are recomputed from the combined errors. The append compatibility check ignores
 `samples`, `seed`, and bootstrap settings, but requires the physical/model
-parameters and state seed to match.
+parameters, state seed, and Clifford sampler to match.
 
 This workflow generates `n+1` states by applying a random global Clifford, then
 `i` T gates for `i=0,...,n`, and then another random global Clifford. It then
@@ -95,7 +96,7 @@ computes the kurtosis of the rescaled squared errors, and saves a
 kurtosis-versus-magic plot together with an error-distribution plot.
 
 The default output directory is
-`reproduce/outputs/magic_kurtosis_n10_state_seed4321_dt0.1_order1_steps1/`.
+`reproduce/outputs/magic_kurtosis_n10_state_seed4321_dt0.1_order1_steps1_bravyi-maslov-qiskit-tableau-u64-seed/`.
 
 ## Magic and Entanglement Growth
 

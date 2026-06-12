@@ -62,7 +62,7 @@ def sample_trotter_errors(
 ) -> np.ndarray:
     errors = []
     for _ in range(samples):
-        sampled_state = state.evolve(local_random_clifford(n, rng))
+        sampled_state = state.evolve(local_random_clifford(n, rng).to_circuit())
         error_state = error_matrix @ sampled_state.data
         errors.append(np.sqrt(np.real(error_state.conj().T @ error_state)))
     return np.asarray(errors, dtype=float)

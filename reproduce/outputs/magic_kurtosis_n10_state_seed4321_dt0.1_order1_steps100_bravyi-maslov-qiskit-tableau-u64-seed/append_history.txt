@@ -1,0 +1,2 @@
+seed=1234, samples_added_per_state=10000, total_samples_per_state=10000, append=False
+seed=9999, samples_added_per_state=0, total_samples_per_state=10000, append=True

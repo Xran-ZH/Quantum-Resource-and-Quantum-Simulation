@@ -17,6 +17,8 @@ preserved in `legacy/` for provenance. The cleaned reproduction workflow is in
 - `DATA_PROVENANCE.md`: mapping from existing data directories to the original
   generation workflows.
 - `requirements.txt`: minimal Python environment for the cleaned scripts.
+- `LICENSE`: license for this repository's code and documentation.
+- `THIRD_PARTY_LICENSES.md`: third-party dependency license summary.
 - `reproduce/outputs/`: cleaned workflow outputs. Generated output directories
   are ignored by default; selected data sets can be added explicitly when needed.
 
@@ -87,3 +89,9 @@ proxy.
 
 Generated output directories are ignored by default. See `reproduce/README.md`
 for output naming and append behavior.
+
+## License
+
+This repository is released under the Apache License 2.0; see `LICENSE`.
+Third-party packages used by the reproduction workflows retain their own
+licenses. See `THIRD_PARTY_LICENSES.md` for a dependency license summary.

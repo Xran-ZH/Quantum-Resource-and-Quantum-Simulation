@@ -5,11 +5,11 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from qiskit.quantum_info import Statevector, random_clifford
+from qiskit.quantum_info import Statevector
 
 from .bootstrap import bootstrap_ci
 from .kurtosis import kurtosis_statistic, r_squared_linear_fit
-from .resources import child_seed, generate_t_magic_state_family, magic
+from .resources import GLOBAL_CLIFFORD_SAMPLER, generate_t_magic_state_family, global_random_clifford, magic
 from .simulation_backend import NearestNeighbour1D, expH, pf
 
 
@@ -46,7 +46,7 @@ def sample_global_clifford_errors(
 ) -> np.ndarray:
     errors = np.empty(samples, dtype=float)
     for index in range(samples):
-        sampled_state = state.evolve(random_clifford(n, seed=child_seed(rng)))
+        sampled_state = state.evolve(global_random_clifford(n, rng).to_circuit())
         errors[index] = _state_error(sampled_state.data, error_matrix)
     return errors
 
@@ -69,6 +69,7 @@ def _experiment_signature(config: MagicKurtosisConfig) -> dict[str, object]:
         "trotter_order": config.trotter_order,
         "steps": config.steps,
         "magic_batch_size": config.magic_batch_size,
+        "global_clifford_sampler": GLOBAL_CLIFFORD_SAMPLER,
         "state_family": "random global Clifford, i T gates for i=0..n, random global Clifford",
     }
 
@@ -95,6 +96,9 @@ def _validate_append_compatibility(config: MagicKurtosisConfig, output_dir: Path
     mismatches = []
     for key, value in _experiment_signature(config).items():
         old_value = metadata.get(key)
+        if key == "global_clifford_sampler" and old_value is None:
+            mismatches.append(f"{key}: existing=<missing>, requested={value}")
+            continue
         if old_value is not None and old_value != str(value):
             if key == "steps" and metadata.get("trotter_steps") == str(value):
                 continue

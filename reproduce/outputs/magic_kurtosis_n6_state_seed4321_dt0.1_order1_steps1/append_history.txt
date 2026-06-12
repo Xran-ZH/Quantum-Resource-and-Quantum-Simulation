@@ -1,2 +1,0 @@
-seed=1, samples_added_per_state=100000, total_samples_per_state=100000, append=False
-seed=100000, samples_added_per_state=100000, total_samples_per_state=200000, append=True

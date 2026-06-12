@@ -10,6 +10,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from reproduce.src.magic_experiment import MagicKurtosisConfig, run_magic_kurtosis_experiment
+from reproduce.src.resources import GLOBAL_CLIFFORD_SAMPLER
 
 
 def parse_args() -> argparse.Namespace:
@@ -49,9 +50,11 @@ def main() -> None:
 
     output_dir = args.output_dir
     if output_dir is None:
+        sampler_label = GLOBAL_CLIFFORD_SAMPLER.replace("_", "-")
         output_dir = REPO_ROOT / "reproduce" / "outputs" / (
             f"magic_kurtosis_n{config.n}_state_seed{config.state_seed}_"
-            f"dt{config.delta_t}_order{config.trotter_order}_steps{config.steps}"
+            f"dt{config.delta_t}_order{config.trotter_order}_steps{config.steps}_"
+            f"{sampler_label}"
         )
 
     result_dir = run_magic_kurtosis_experiment(config, output_dir)

@@ -17,8 +17,8 @@ preserved in `legacy/` for provenance. The cleaned reproduction workflow is in
 - `DATA_PROVENANCE.md`: mapping from existing data directories to the original
   generation workflows.
 - `requirements.txt`: minimal Python environment for the cleaned scripts.
-- `reproduce/outputs/`: cleaned workflow outputs, including the committed
-  notebook example data set.
+- `reproduce/outputs/`: cleaned workflow outputs. Generated output directories
+  are ignored by default; selected data sets can be added explicitly when needed.
 
 ## Quick Start
 
@@ -47,6 +47,10 @@ Run the cleaned magic/kurtosis workflow:
 ```bash
 python reproduce/scripts/run_magic_kurtosis.py --seed 1234 --state-seed 4321 --delta-t 0.1 --steps 1
 ```
+
+The magic/kurtosis workflow uses the Bravyi-Maslov global Clifford tableau
+sampler through Qiskit's compiled tableau backend, with 64-bit seeds drawn from
+the command-line random seed for reproducible sampling.
 
 For longer accumulated-time Trotter errors, increase `--steps`. For example,
 `--delta-t 0.1 --steps 100` computes errors at total time `T=10`:
@@ -81,5 +85,5 @@ Haar averages for the corresponding low-order moments. For higher-order
 statistics, it should be regarded as a structured and reproducible local-Haar
 proxy.
 
-The cleaned scripts do not overwrite the existing data files. See
-`reproduce/README.md` for details.
+Generated output directories are ignored by default. See `reproduce/README.md`
+for output naming and append behavior.

@@ -13,6 +13,12 @@ from .resources import GLOBAL_CLIFFORD_SAMPLER, generate_t_magic_state_family, g
 from .simulation_backend import NearestNeighbour1D, expH, pf
 
 
+PLOT_LABEL_FONTSIZE = 22
+PLOT_TICK_FONTSIZE = 20
+PLOT_LEGEND_FONTSIZE = 20
+PLOT_TEXT_FONTSIZE = 20
+
+
 @dataclass(frozen=True)
 class MagicKurtosisConfig:
     n: int = 10
@@ -264,11 +270,18 @@ def _plot_kurtosis(
         label=r"Kur[$s_E(\psi)$]",
     )
     ax.plot(sorted_magics, fit(sorted_magics), "--", color="gray", linewidth=2, label="Linear fit")
-    ax.set_xlabel("Magic M")
-    ax.set_ylabel("Kurtosis")
+    ax.set_xlabel("Magic M", fontsize=PLOT_LABEL_FONTSIZE)
+    ax.set_ylabel("Kurtosis", fontsize=PLOT_LABEL_FONTSIZE)
+    ax.tick_params(axis="both", labelsize=PLOT_TICK_FONTSIZE)
     ax.grid(alpha=0.3)
-    ax.text(0.05, 0.08, rf"$R^2$ = {r_squared:.4f}", transform=ax.transAxes)
-    ax.legend(framealpha=0)
+    ax.text(
+        0.05,
+        0.08,
+        rf"$R^2$ = {r_squared:.4f}",
+        transform=ax.transAxes,
+        fontsize=PLOT_TEXT_FONTSIZE,
+    )
+    ax.legend(framealpha=0, fontsize=PLOT_LEGEND_FONTSIZE)
     fig.savefig(output_path, bbox_inches="tight", pad_inches=0.1, dpi=200, transparent=True)
     plt.close(fig)
 
@@ -300,10 +313,11 @@ def _plot_error_distributions(
                 label=rf"$M={magic_value:.3f}$",
             )
 
-    ax.set_xlabel(r"Simulation error $s_E(\psi)$")
-    ax.set_ylabel("Density")
+    ax.set_xlabel(r"Simulation error $s_E(\psi)$", fontsize=PLOT_LABEL_FONTSIZE)
+    ax.set_ylabel("Density", fontsize=PLOT_LABEL_FONTSIZE)
+    ax.tick_params(axis="both", labelsize=PLOT_TICK_FONTSIZE)
     ax.ticklabel_format(style="sci", scilimits=(-2, 2), axis="both", useMathText=True)
     ax.grid(alpha=0.3)
-    ax.legend(fontsize=9, framealpha=0, ncol=2)
+    ax.legend(fontsize=PLOT_LEGEND_FONTSIZE, framealpha=0, ncol=2)
     fig.savefig(output_path, bbox_inches="tight", pad_inches=0.1, dpi=200, transparent=True)
     plt.close(fig)

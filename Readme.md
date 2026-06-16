@@ -85,7 +85,7 @@ Haar averages for the corresponding low-order moments. For higher-order
 statistics, it should be regarded as a structured and reproducible local-Haar
 proxy.
 
-Generated output directories are ignored by default. See `reproduce/README.md`
+Generated smoke output directories are ignored by default. See `reproduce/README.md`
 for output naming and append behavior.
 
 ## Reuse
